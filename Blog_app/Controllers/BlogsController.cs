@@ -13,28 +13,33 @@ namespace Blog_app.Controllers
     public class BlogsController : Controller
     {
         private readonly mvcContext _context;
-        //private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public BlogsController(mvcContext context
-            //,IHttpContextAccessor httpContextAccessor
+            , IHttpContextAccessor httpContextAccessor
             )
         {
             _context = context;
-            //_httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        //private Boolean SetSessionDataInViewBag()
-        //{
-        //    var username = _httpContextAccessor.HttpContext.Session.GetString("Username");
-        //    var role = _httpContextAccessor.HttpContext.Session.GetString("Role");
-        //    if (username != null && role != null)
-        //    {
-        //        return true;
-        //    }
-        //    return
-        //}
+        private Boolean SetSessionDataInViewBag()
+        {
+            var username = _httpContextAccessor.HttpContext.Session.GetString("Username");
+            var role = _httpContextAccessor.HttpContext.Session.GetString("Role");
+            if (username != null && role != null)
+            {
+                return true;
+            }
+            return false;
+        }
         public async Task<IActionResult> Index()
         {
+            if (!SetSessionDataInViewBag())
+            {
+                ViewBag.errorList = "Please Login first";
+                return RedirectToAction("Index", "Auth");
+            }
               return _context.Blogs != null ? 
                           View(await _context.Blogs.ToListAsync()) :
                           Problem("Entity set 'mvcContext.Blogs'  is null.");
@@ -42,6 +47,7 @@ namespace Blog_app.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
+            
             if (id == null || _context.Blogs == null)
             {
                 return NotFound();
@@ -59,6 +65,11 @@ namespace Blog_app.Controllers
 
         public IActionResult Create()
         {
+            if (!SetSessionDataInViewBag())
+            {
+                ViewBag.errorList = "Please Login first";
+                return RedirectToAction("Index", "Auth");
+            }
             return View();
         }
 
@@ -78,6 +89,11 @@ namespace Blog_app.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
+            if (!SetSessionDataInViewBag())
+            {
+                ViewBag.errorList = "Please Login first";
+                return RedirectToAction("Index", "Auth");
+            }
             if (id == null || _context.Blogs == null)
             {
                 return NotFound();
@@ -125,6 +141,11 @@ namespace Blog_app.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
+            if (!SetSessionDataInViewBag())
+            {
+                ViewBag.errorList = "Please Login first";
+                return RedirectToAction("Index", "Auth");
+            }
             if (id == null || _context.Blogs == null)
             {
                 return NotFound();

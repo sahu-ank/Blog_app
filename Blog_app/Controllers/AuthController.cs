@@ -30,7 +30,7 @@ namespace Blog_app.Controllers
                     HttpContext.Session.SetString("Role", user.Role);
 
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Blogs");
                 }
                 return BadRequest("Invailid attempt");
             }

@@ -37,5 +37,5 @@ namespace Blog_app.Controllers
             return View(model);
         }
     }
-}
+
 }
